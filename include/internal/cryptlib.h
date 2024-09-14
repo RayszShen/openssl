@@ -1,5 +1,5 @@
 /*
- * Copyright 1995-2023 The OpenSSL Project Authors. All Rights Reserved.
+ * Copyright 1995-2024 The OpenSSL Project Authors. All Rights Reserved.
  *
  * Licensed under the Apache License 2.0 (the "License").  You may not use
  * this file except in compliance with the License.  You can obtain a copy
@@ -161,6 +161,12 @@ char *ossl_ipaddr_to_asc(unsigned char *p, int len);
 char *ossl_buf2hexstr_sep(const unsigned char *buf, long buflen, char sep);
 unsigned char *ossl_hexstr2buf_sep(const char *str, long *buflen,
                                    const char sep);
+
+/**
+ *  Writes |n| value in hex format into |buf|,
+ *  and returns the number of bytes written
+ */
+size_t ossl_to_hex(char *buf, uint8_t n);
 
 STACK_OF(SSL_COMP) *ossl_load_builtin_compressions(void);
 void ossl_free_compression_methods_int(STACK_OF(SSL_COMP) *methods);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2023 The OpenSSL Project Authors. All Rights Reserved.
+ * Copyright 2019-2024 The OpenSSL Project Authors. All Rights Reserved.
  * Copyright (c) 2019, Oracle and/or its affiliates.  All rights reserved.
  *
  * Licensed under the Apache License 2.0 (the "License").  You may not use
@@ -657,10 +657,13 @@ static void impl_cache_flush_one_alg(ossl_uintmax_t idx, ALGORITHM *alg,
                                      void *v)
 {
     IMPL_CACHE_FLUSH *state = (IMPL_CACHE_FLUSH *)v;
+    unsigned long orig_down_load = lh_QUERY_get_down_load(alg->cache);
 
     state->cache = alg->cache;
+    lh_QUERY_set_down_load(alg->cache, 0);
     lh_QUERY_doall_IMPL_CACHE_FLUSH(state->cache, &impl_cache_flush_cache,
                                     state);
+    lh_QUERY_set_down_load(alg->cache, orig_down_load);
 }
 
 static void ossl_method_cache_flush_some(OSSL_METHOD_STORE *store)

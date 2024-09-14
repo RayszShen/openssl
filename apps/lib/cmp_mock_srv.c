@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2023 The OpenSSL Project Authors. All Rights Reserved.
+ * Copyright 2018-2024 The OpenSSL Project Authors. All Rights Reserved.
  * Copyright Siemens AG 2018-2020
  *
  * Licensed under the Apache License 2.0 (the "License").  You may not use
@@ -16,8 +16,7 @@
 #include <openssl/cmperr.h>
 
 /* the context for the CMP mock server */
-typedef struct
-{
+typedef struct {
     X509 *refCert;             /* cert to expect for oldCertID in kur/rr msg */
     X509 *certOut;             /* certificate to be returned in cp/ip/kup msg */
     X509_CRL *crlOut;          /* CRL to be returned in genp for crls */

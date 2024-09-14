@@ -21,7 +21,6 @@
 #include "crypto/rand_pool.h"
 #include "prov/provider_ctx.h"
 #include "prov/providercommon.h"
-#include "prov/fipscommon.h"
 #include "crypto/context.h"
 
 /*
@@ -428,7 +427,7 @@ int ossl_prov_drbg_instantiate(PROV_DRBG *drbg, unsigned int strength,
         }
 #ifndef PROV_RAND_GET_RANDOM_NONCE
         else { /* parent == NULL */
-            noncelen = prov_drbg_get_nonce(drbg, &nonce, drbg->min_noncelen, 
+            noncelen = prov_drbg_get_nonce(drbg, &nonce, drbg->min_noncelen,
                                            drbg->max_noncelen);
             if (noncelen < drbg->min_noncelen
                     || noncelen > drbg->max_noncelen) {
@@ -1024,16 +1023,17 @@ int ossl_drbg_verify_digest(PROV_DRBG *drbg, OSSL_LIB_CTX *libctx,
     if (!approved) {
         if (!OSSL_FIPS_IND_ON_UNAPPROVED(drbg, OSSL_FIPS_IND_SETTABLE0,
                                          libctx, "DRBG", "Digest",
-                                         FIPS_restricted_drbg_digests_enabled)) {
+                                         ossl_fips_config_restricted_drbg_digests)) {
             ERR_raise(ERR_LIB_PROV, PROV_R_DIGEST_NOT_ALLOWED);
             return 0;
         }
     }
-#endif
+#else   /* FIPS_MODULE */
     /* Outside of FIPS, any digests that are not XOF are allowed */
-    if ((EVP_MD_get_flags(md) & EVP_MD_FLAG_XOF) != 0) {
+    if (EVP_MD_xof(md)) {
         ERR_raise(ERR_LIB_PROV, PROV_R_XOF_DIGESTS_NOT_ALLOWED);
         return 0;
     }
+#endif  /* FIPS_MODULE */
     return 1;
 }

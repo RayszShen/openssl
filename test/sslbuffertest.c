@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023 The OpenSSL Project Authors. All Rights Reserved.
+ * Copyright 2016-2024 The OpenSSL Project Authors. All Rights Reserved.
  *
  * Licensed under the Apache License 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -140,8 +140,7 @@ static int test_func(int test)
          * bytes from the record header/padding etc.
          */
         for (ret = -1, i = 0, len = 0; len != sizeof(testdata) &&
-                 i < MAX_ATTEMPTS; i++)
-        {
+                                       i < MAX_ATTEMPTS; i++) {
             if (test >= 5 && (!TEST_true(SSL_free_buffers(serverssl))
                               || !TEST_true(checkbuffers(serverssl, 0))))
                 goto end;
