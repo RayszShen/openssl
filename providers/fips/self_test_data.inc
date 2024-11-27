@@ -250,6 +250,7 @@ static const unsigned char aes_128_ecb_ct[] = {
     0x4e, 0xaa, 0x6f, 0xb4, 0xdb, 0xf7, 0x84, 0x65
 };
 
+#ifndef OPENSSL_NO_DES
 /*
  * TDES-ECB test data from
  * https://github.com/usnistgov/ACVP-Server/blob/master/gen-val/json-files/ACVP-TDES-ECB-1.0
@@ -266,6 +267,7 @@ static const unsigned char tdes_ct[] = {
 static const unsigned char tdes_pt[] = {
     0x4B, 0xAB, 0x3B, 0xE1, 0x50, 0x2E, 0x3B, 0x36
 };
+#endif
 
 static const ST_KAT_CIPHER st_kat_cipher_tests[] = {
     {
@@ -291,6 +293,7 @@ static const ST_KAT_CIPHER st_kat_cipher_tests[] = {
         CIPHER_MODE_DECRYPT,
         ITM(aes_128_ecb_key)
     },
+#ifndef OPENSSL_NO_DES
     {
         {
             OSSL_SELF_TEST_DESC_CIPHER_TDES,
@@ -301,6 +304,7 @@ static const ST_KAT_CIPHER st_kat_cipher_tests[] = {
         CIPHER_MODE_DECRYPT,
         ITM(tdes_key)
     }
+#endif
 };
 
 static const char hkdf_digest[] = "SHA256";
@@ -1263,18 +1267,6 @@ static const ST_KAT_PARAM rsa_priv_key[] = {
     ST_KAT_PARAM_END()
 };
 
-/*-
- * Using OSSL_PKEY_RSA_PAD_MODE_NONE directly in the expansion of the
- * ST_KAT_PARAM_UTF8STRING macro below causes a failure on ancient
- * HP/UX PA-RISC compilers.
- */
-static const char pad_mode_none[] = OSSL_PKEY_RSA_PAD_MODE_NONE;
-
-static const ST_KAT_PARAM rsa_enc_params[] = {
-    ST_KAT_PARAM_UTF8STRING(OSSL_ASYM_CIPHER_PARAM_PAD_MODE, pad_mode_none),
-    ST_KAT_PARAM_END()
-};
-
 static const unsigned char rsa_sig_msg[] = "Hello World!";
 
 static const unsigned char rsa_expected_sig[256] = {
@@ -1713,34 +1705,4 @@ static const ST_KAT_SIGN st_kat_sign_tests[] = {
         ITM(dsa_expected_sig)
     },
 #endif /* OPENSSL_NO_DSA */
-};
-
-static const ST_KAT_ASYM_CIPHER st_kat_asym_cipher_tests[] = {
-    {
-        OSSL_SELF_TEST_DESC_ASYM_RSA_ENC,
-        "RSA",
-        1,
-        rsa_pub_key,
-        rsa_enc_params,
-        ITM(rsa_asym_plaintext_encrypt),
-        ITM(rsa_asym_expected_encrypt),
-    },
-    {
-        OSSL_SELF_TEST_DESC_ASYM_RSA_DEC,
-        "RSA",
-        0,
-        rsa_priv_key,
-        rsa_enc_params,
-        ITM(rsa_asym_expected_encrypt),
-        ITM(rsa_asym_plaintext_encrypt),
-    },
-    {
-        OSSL_SELF_TEST_DESC_ASYM_RSA_DEC,
-        "RSA",
-        0,
-        rsa_crt_key,
-        rsa_enc_params,
-        ITM(rsa_asym_expected_encrypt),
-        ITM(rsa_asym_plaintext_encrypt),
-    },
 };
